@@ -1,86 +1,52 @@
 import React from 'react';
+import axios from 'axios';
+import Movie from './Movie';
+import './App.css';
 
-class App extends React.Component{
+class App extends React.Component {
   state = {
     isLoading: true,
     movies: [],
   };
 
-  componentDidMount(){
-    setTimeout(() => {
-      this.setState({ isLoading : false });
-    }, 700);
+  getMovies = async () => {
+    const {
+      data: {
+        data: { movies },
+      },
+    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+    this.setState({ movies, isLoading: false });
   }
 
-  render(){
-    const {isLoading} = this.state;
-   return <div>{isLoading ? 'Loading...' : 'We are ready'}</div>;
+  componentDidMount() {
+    this.getMovies();
+  }
+
+  render() {
+    const { isLoading, movies } = this.state;
+    return (
+      <section class="container">
+        {isLoading ? (
+          <div class="loader">
+            <span class="loader_text">Loading...</span>
+          </div>
+        ) : (
+            <div class="movies">
+              {movies.map((movie =>
+                <Movie
+                  key={movie.id}
+                  id={movie.id}
+                  year={movie.year}
+                  title={movie.title}
+                  summary={movie.summary}
+                  poster={movie.medium_cover_image}
+                />
+              ))}
+            </div>
+          )}
+      </section>
+    );
   }
 }
 
 export default App;
-
-
-
-/*
-import PropTypes from 'prop-types';
-
-function Food({name, picture, rating}){
-  return (
-    <div>
-      <h2>I like {name}</h2>
-      <h4>{rating}/5.0</h4>
-      <img src = {picture} width='80px' height='60px' alt={name}/>
-    </div>
-  );
-}
-
-const foodILike = [
-  {
-    id : 1,
-    name : "Kimchi",
-    image : 'https://cdn.imweb.me/thumbnail/20200415/6b6e035658bac.png',
-    rating : 5,
-  },
-  {
-    id : 2,
-    name : "Samgyeopsal",
-    image : 'https://pds.joins.com/news/component/htmlphoto_mmdata/201702/27/117f5b49-1d09-4550-8ab7-87c0d82614de.jpg',
-    rating : 4.9,
-  },
-  {
-    id : 3,
-    name : "Bibimbap",
-    image : 'https://recipe1.ezmember.co.kr/cache/recipe/2017/04/13/abcf293fb7d0d73d61e274127ced7b931.jpg',
-    rating : 4,
-  },
-  {
-    id : 4,
-    name : "Doncasu",
-    image : 'https://th3.tmon.kr/thumbs/image/6ea/082/d57/2906e06a0_700x700_95_FIT.jpg',
-    rating : 4.5,
-  },
-  {
-    id : 5,
-    name : "Kimbap",
-    image : 'https://recipe1.ezmember.co.kr/cache/recipe/2016/06/29/e7401296033ab8e4297cd53d71e1bba91.jpg',
-    rating : 3.6,
-  },
-];
-
-function App() {
-  return (
-    <div>
-      {foodILike.map(dish => (
-        <Food key={dish.id} name={dish.name} picture={dish.image} rating={dish.rating}/>
-      ))}
-    </div>
-  );
-}
-
-Food.propTypes = {
-  name : PropTypes.string.isRequired,
-  picture : PropTypes.string.isRequired,
-  rating : PropTypes.number,
-};
-*/
