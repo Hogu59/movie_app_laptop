@@ -1,4 +1,28 @@
 import React from 'react';
+
+class App extends React.Component{
+  state = {
+    isLoading: true,
+    movies: [],
+  };
+
+  componentDidMount(){
+    setTimeout(() => {
+      this.setState({ isLoading : false });
+    }, 700);
+  }
+
+  render(){
+    const {isLoading} = this.state;
+   return <div>{isLoading ? 'Loading...' : 'We are ready'}</div>;
+  }
+}
+
+export default App;
+
+
+
+/*
 import PropTypes from 'prop-types';
 
 function Food({name, picture, rating}){
@@ -59,5 +83,4 @@ Food.propTypes = {
   picture : PropTypes.string.isRequired,
   rating : PropTypes.number,
 };
-
-export default App;
+*/
